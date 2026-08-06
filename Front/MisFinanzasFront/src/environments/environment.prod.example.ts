@@ -1,14 +1,12 @@
 /**
- * Ejemplo del archivo de entorno de producción.
+ * Plantilla de referencia para el archivo de entorno de producción.
  *
- * Este archivo NO se versiona. En Render (Static Site) se genera el archivo
- * src/environments/environment.prod.ts real durante el build, inyectando la URL:
+ * El archivo real src/environments/environment.prod.ts se versiona en el
+ * repositorio (la URL pública de la API no es un dato sensible) y se usa en
+ * el build de producción mediante fileReplacements.
  *
- *   Build command (Render):
- *   echo "export const environment = { production: true, apiUrl: '$API_URL' };" \
- *     > src/environments/environment.prod.ts && ng build
- *
- * Crea una variable de entorno API_URL en Render con la URL de tu API.
+ * Si necesitas cambiarla entre despliegues, edita environment.prod.ts
+ * directamente o inyéctala en build con una variable de entorno.
  */
 export const environment = {
   production: true,

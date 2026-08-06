@@ -31,4 +31,3 @@ logs/
 **/dist/
 **/.angular/
 **/coverage/
-Front/MisFinanzasFront/src/environments/environment.prod.ts
