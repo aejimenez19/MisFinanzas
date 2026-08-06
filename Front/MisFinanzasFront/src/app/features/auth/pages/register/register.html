@@ -1,0 +1,168 @@
+<main class="min-h-dvh flex items-center justify-center bg-surface px-md py-lg">
+  <div
+    class="w-full max-w-[400px] flex flex-col gap-xl bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-card overflow-hidden"
+  >
+    <!-- Header -->
+    <header class="flex flex-col items-center text-center gap-sm">
+      <div
+        class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-sm"
+        aria-hidden="true"
+      >
+        <span class="material-symbols-outlined text-on-primary text-[28px]" data-icon="account_balance">
+          account_balance
+        </span>
+      </div>
+      <h1 class="text-headline-md text-primary">MisFinanzas</h1>
+      <p class="text-body-md text-on-surface-variant">Gestión Financiera</p>
+      <h2 class="text-display-lg-mobile text-on-surface mt-md">Crear cuenta</h2>
+    </header>
+
+    <!-- Formulario -->
+    <form class="flex flex-col gap-lg w-full" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="grid grid-cols-2 gap-lg">
+        <div class="flex flex-col gap-xs">
+          <label class="text-label-sm text-on-surface-variant" for="firstName">Nombre</label>
+          <div class="relative">
+            <span
+              class="material-symbols-outlined absolute left-xs top-1/2 -translate-y-1/2 text-xl text-outline pointer-events-none"
+              data-icon="badge"
+            >badge</span>
+            <input
+              class="w-full pl-xl pr-md py-sm bg-surface-container-lowest border border-outline-variant rounded text-body-md text-on-surface placeholder:text-outline custom-input transition-all outline-none"
+              [class.border-error]="hasError('firstName')"
+              id="firstName"
+              type="text"
+              placeholder="Nombre"
+              autocomplete="given-name"
+              formControlName="firstName"
+            />
+          </div>
+          @if (hasError('firstName')) {
+            <p class="mt-xs text-[13px] text-error">{{ errorMessage('firstName') }}</p>
+          }
+        </div>
+
+        <div class="flex flex-col gap-xs">
+          <label class="text-label-sm text-on-surface-variant" for="lastName">Apellido</label>
+          <div class="relative">
+            <span
+              class="material-symbols-outlined absolute left-xs top-1/2 -translate-y-1/2 text-xl text-outline pointer-events-none"
+              data-icon="badge"
+            >badge</span>
+            <input
+              class="w-full pl-xl pr-md py-sm bg-surface-container-lowest border border-outline-variant rounded text-body-md text-on-surface placeholder:text-outline custom-input transition-all outline-none"
+              [class.border-error]="hasError('lastName')"
+              id="lastName"
+              type="text"
+              placeholder="Apellido"
+              autocomplete="family-name"
+              formControlName="lastName"
+            />
+          </div>
+          @if (hasError('lastName')) {
+            <p class="mt-xs text-[13px] text-error">{{ errorMessage('lastName') }}</p>
+          }
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label class="text-label-sm text-on-surface-variant" for="email">Correo electrónico</label>
+        <div class="relative">
+          <span
+            class="material-symbols-outlined absolute left-xs top-1/2 -translate-y-1/2 text-xl text-outline pointer-events-none"
+            data-icon="mail"
+          >mail</span>
+          <input
+            class="w-full pl-xl pr-md py-sm bg-surface-container-lowest border border-outline-variant rounded text-body-md text-on-surface placeholder:text-outline custom-input transition-all outline-none"
+            [class.border-error]="hasError('email')"
+            id="email"
+            type="email"
+            placeholder="nombre@empresa.com"
+            autocomplete="email"
+            formControlName="email"
+          />
+        </div>
+        @if (hasError('email')) {
+          <p class="mt-xs text-[13px] text-error">{{ errorMessage('email') }}</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label class="text-label-sm text-on-surface-variant" for="password">Contraseña</label>
+        <div class="relative">
+          <span
+            class="material-symbols-outlined absolute left-xs top-1/2 -translate-y-1/2 text-xl text-outline pointer-events-none"
+            data-icon="lock"
+          >lock</span>
+          <input
+            class="w-full pl-xl pr-xl py-sm bg-surface-container-lowest border border-outline-variant rounded text-body-md text-on-surface placeholder:text-outline custom-input transition-all outline-none"
+            [class.border-error]="hasError('password')"
+            id="password"
+            [type]="passwordVisible() ? 'text' : 'password'"
+            placeholder="••••••••"
+            autocomplete="new-password"
+            formControlName="password"
+          />
+          <button
+            type="button"
+            class="absolute right-xs top-1/2 -translate-y-1/2 p-xs text-on-surface-variant hover:text-on-surface transition-colors"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="passwordVisible() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+          >
+            <span class="material-symbols-outlined text-xl" data-icon="visibility">
+              {{ passwordVisible() ? 'visibility_off' : 'visibility' }}
+            </span>
+          </button>
+        </div>
+        <p class="text-[12px] leading-tight text-on-surface-variant mt-xs">
+          Debe tener al menos 8 caracteres.
+        </p>
+        @if (hasError('password')) {
+          <p class="mt-xs text-[13px] text-error">{{ errorMessage('password') }}</p>
+        }
+      </div>
+
+      @if (submitError(); as error) {
+        <div
+          class="flex items-start gap-2.5 bg-error-container border border-error/30 rounded-lg p-3"
+          role="alert"
+        >
+          <span class="material-symbols-outlined text-lg text-on-error-container shrink-0" data-icon="error">
+            error
+          </span>
+          <p class="text-[13px] leading-[18px] text-on-error-container">{{ error }}</p>
+        </div>
+      }
+
+      <button
+        type="submit"
+        [disabled]="loading()"
+        class="w-full bg-primary text-on-primary text-body-lg font-semibold py-[16px] rounded flex items-center justify-center gap-sm mt-sm hover:opacity-90 transition-opacity disabled:opacity-60 disabled:pointer-events-none"
+      >
+        @if (loading()) {
+          <span
+            class="material-symbols-outlined text-[20px] animate-spin"
+            data-icon="progress_activity"
+            aria-hidden="true"
+          >progress_activity</span>
+          <span>Creando cuenta…</span>
+        } @else {
+          <span>Crear cuenta</span>
+          <span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
+        }
+      </button>
+    </form>
+
+    <!-- Footer -->
+    <footer class="flex flex-col items-center gap-sm mt-md">
+      <p class="text-body-md text-on-surface-variant text-center">
+        ¿Ya tienes una cuenta?
+        <a class="text-primary font-semibold hover:underline" routerLink="/login">Iniciar sesión</a>
+      </p>
+      <p class="text-[12px] leading-tight text-on-surface-variant text-center max-w-[280px]">
+        Al registrarte aceptas nuestros <a class="underline" href="#">Términos de Servicio</a> y
+        <a class="underline" href="#">Política de Privacidad</a>.
+      </p>
+    </footer>
+  </div>
+</main>

@@ -1,0 +1,9 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.custom-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(9, 20, 38, 0.1);
+}

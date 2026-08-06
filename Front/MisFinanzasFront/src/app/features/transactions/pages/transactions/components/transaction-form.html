@@ -1,0 +1,109 @@
+<section class="bg-surface-container-lowest rounded-2xl p-lg shadow-soft border border-outline-variant/30 flex flex-col h-full">
+  <h3 class="text-headline-md font-bold text-on-surface mb-md">Nueva entrada</h3>
+
+  <div class="flex p-1 bg-secondary-fixed rounded-xl mb-lg" role="group" aria-label="Tipo de transacción">
+    <button
+      type="button"
+      (click)="setType('EXPENSE')"
+      class="flex-1 py-2 px-4 rounded-lg text-label-sm font-bold transition-all cursor-pointer"
+      [class.bg-white]="type() === 'EXPENSE'"
+      [class.text-on-surface]="type() === 'EXPENSE'"
+      [class.shadow-sm]="type() === 'EXPENSE'"
+      [class.ring-1]="type() === 'EXPENSE'"
+      [class.ring-black/5]="type() === 'EXPENSE'"
+      [class.text-on-surface-variant]="type() !== 'EXPENSE'"
+      [class.hover:text-on-surface]="type() !== 'EXPENSE'"
+    >
+      Gasto
+    </button>
+    <button
+      type="button"
+      (click)="setType('INCOME')"
+      class="flex-1 py-2 px-4 rounded-lg text-label-sm font-bold transition-all cursor-pointer"
+      [class.bg-white]="type() === 'INCOME'"
+      [class.text-on-surface]="type() === 'INCOME'"
+      [class.shadow-sm]="type() === 'INCOME'"
+      [class.ring-1]="type() === 'INCOME'"
+      [class.ring-black/5]="type() === 'INCOME'"
+      [class.text-on-surface-variant]="type() !== 'INCOME'"
+      [class.hover:text-on-surface]="type() !== 'INCOME'"
+    >
+      Ingreso
+    </button>
+  </div>
+
+  <form class="flex flex-col gap-md flex-1" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="flex flex-col gap-xs">
+      <label class="text-label-sm text-on-surface-variant" for="transaction-amount">Monto</label>
+      <div class="relative">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface text-numeric-data pointer-events-none">$</span>
+        <input
+          id="transaction-amount"
+          formControlName="amount"
+          appCurrencyInput
+          class="w-full pl-8 pr-4 py-3 bg-surface border border-outline-variant rounded-lg text-numeric-data font-bold text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:font-normal placeholder:text-on-surface-variant"
+          placeholder="0.00"
+          inputmode="decimal"
+          type="text"
+        />
+      </div>
+      @if (hasError('amount')) {
+        <p class="text-label-sm text-error">Ingresa un monto mayor a cero.</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <label class="text-label-sm text-on-surface-variant" for="transaction-category">Categoría</label>
+      <div class="relative">
+        <select
+          id="transaction-category"
+          formControlName="categoryId"
+          class="w-full pl-4 pr-10 py-3 bg-surface border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all appearance-none"
+        >
+          <option [ngValue]="null" disabled>Selecciona categoría</option>
+          @for (category of activeCategories(); track category.id) {
+            <option [ngValue]="category.id">{{ category.name }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+      </div>
+      @if (hasError('categoryId')) {
+        <p class="text-label-sm text-error">Selecciona una categoría.</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <label class="text-label-sm text-on-surface-variant" for="transaction-date">Fecha</label>
+      <input
+        id="transaction-date"
+        formControlName="movementDate"
+        class="w-full pl-4 pr-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+        type="date"
+      />
+      @if (hasError('movementDate')) {
+        <p class="text-label-sm text-error">Ingresa una fecha válida.</p>
+      }
+    </div>
+
+    <div class="flex flex-col gap-xs flex-1">
+      <label class="text-label-sm text-on-surface-variant" for="transaction-description">Descripción</label>
+      <textarea
+        id="transaction-description"
+        formControlName="description"
+        class="w-full pl-4 pr-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all resize-none h-24 flex-1"
+        placeholder="Ej. Supermercado, salario, arriendo..."
+      ></textarea>
+      @if (hasError('description')) {
+        <p class="text-label-sm text-error">La descripción es obligatoria.</p>
+      }
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="submitting()"
+      class="mt-auto w-full bg-primary text-on-primary py-3 rounded-lg text-label-sm font-bold shadow-soft hover:bg-primary-container transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      {{ submitting() ? 'Guardando...' : 'Guardar transacción' }}
+    </button>
+  </form>
+</section>

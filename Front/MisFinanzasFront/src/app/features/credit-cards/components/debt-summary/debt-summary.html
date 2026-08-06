@@ -1,0 +1,11 @@
+<section class="bg-surface-container-lowest rounded-2xl p-lg shadow-soft border border-outline-variant/30 relative overflow-hidden">
+  <div class="absolute right-0 top-0 w-32 h-32 bg-surface-container-highest rounded-bl-full opacity-50 pointer-events-none"></div>
+  <div class="relative z-10">
+    <h3 class="text-label-sm text-on-surface-variant mb-xs">Deuda total entre tarjetas</h3>
+    <p class="text-display-lg-mobile font-bold text-on-surface">{{ formatCurrency(totalDebt()) }}</p>
+    <div class="mt-md flex items-center gap-2 text-sm text-on-surface-variant">
+      <span class="material-symbols-outlined text-sm">credit_card</span>
+      <span>{{ cards().length }} {{ cards().length === 1 ? 'tarjeta' : 'tarjetas' }}</span>
+    </div>
+  </div>
+</section>

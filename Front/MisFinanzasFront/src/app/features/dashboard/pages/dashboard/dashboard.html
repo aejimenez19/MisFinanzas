@@ -1,0 +1,54 @@
+<div class="flex flex-col gap-lg">
+  @if (loading()) {
+    <div class="flex flex-col items-center justify-center gap-md py-xl text-on-surface-variant">
+      <span class="material-symbols-outlined animate-spin text-primary">progress_activity</span>
+      <p class="text-label-sm">Cargando tu resumen financiero...</p>
+    </div>
+  } @else if (summary()) {
+    <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-sm">
+      <div>
+        <h2 class="text-headline-md font-bold text-on-surface">Panel general</h2>
+        <p class="text-label-sm text-on-surface-variant">
+          Resumen de tus finanzas · {{ formatDate(summary()!.generatedAt) }}
+        </p>
+      </div>
+      <button
+        type="button"
+        (click)="reload()"
+        class="w-fit inline-flex items-center gap-md px-lg py-2 text-primary text-label-sm font-bold hover:bg-surface-container rounded-lg transition-colors"
+      >
+        <span class="material-symbols-outlined text-sm">refresh</span> Actualizar
+      </button>
+    </header>
+
+    <app-summary-cards
+      [availableBalance]="summary()!.availableBalance"
+      [monthIncomes]="summary()!.monthIncomes"
+      [monthExpenses]="summary()!.monthExpenses"
+      [nextPaymentAmount]="summary()!.nextPaymentAmount"
+      [nextPaymentDate]="summary()!.nextPaymentDate"
+      [daysUntilDue]="summary()!.daysUntilDue"
+    />
+
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+      <div class="lg:col-span-2">
+        <app-cashflow-chart [flow]="summary()!.cashflow" />
+      </div>
+      <app-credit-cards [cards]="summary()!.cards" />
+    </section>
+
+    <app-recent-transactions [movements]="summary()!.recentMovements" />
+  } @else {
+    <div class="flex flex-col items-center justify-center gap-md py-xl text-center">
+      <span class="material-symbols-outlined text-outline text-4xl">cloud_off</span>
+      <p class="text-body-md text-on-surface-variant">No se pudo cargar el resumen financiero.</p>
+      <button
+        type="button"
+        (click)="reload()"
+        class="inline-flex items-center gap-md px-lg py-2 bg-primary text-on-primary rounded-lg text-label-sm font-bold hover:bg-primary-container transition-colors"
+      >
+        <span class="material-symbols-outlined text-sm">refresh</span> Reintentar
+      </button>
+    </div>
+  }
+</div>

@@ -1,0 +1,34 @@
+# Env
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.iml
+*.ipr
+*.iws
+
+# Logs
+*.log
+logs/
+
+# Backend
+**/target/
+**/.mvn/wrapper/maven-wrapper.jar
+
+# Frontend
+**/node_modules/
+**/dist/
+**/.angular/
+**/coverage/
+Front/MisFinanzasFront/src/environments/environment.prod.ts

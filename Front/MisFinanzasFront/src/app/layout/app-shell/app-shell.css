@@ -1,0 +1,38 @@
+:host {
+  display: flex;
+  min-height: 100%;
+}
+
+.router-link-active {
+  background-color: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+  transform: scale(0.98);
+}
+
+.router-link-active .material-symbols-outlined {
+  color: var(--color-on-secondary-container);
+}
+
+.nb-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.nb-item:hover {
+  color: var(--color-primary);
+}
+
+.nb-active,
+.nb-active .material-symbols-outlined {
+  color: var(--color-primary);
+}

@@ -1,0 +1,57 @@
+<section class="bg-surface-container-lowest rounded-2xl shadow-soft border border-outline-variant/30 overflow-hidden">
+  <div class="px-lg py-md border-b border-outline-variant/50 bg-surface-bright flex items-center justify-between">
+    <h3 class="text-headline-md font-bold text-on-surface">Actividad reciente</h3>
+    <span class="text-label-sm text-on-surface-variant">Últimos {{ items().length }}</span>
+  </div>
+
+  @if (loading()) {
+    <div class="flex flex-col items-center justify-center gap-sm py-xl text-on-surface-variant">
+      <span class="material-symbols-outlined animate-spin text-primary">progress_activity</span>
+      <p class="text-label-sm">Cargando actividad...</p>
+    </div>
+  } @else if (items().length > 0) {
+    <div class="flex flex-col divide-y divide-outline-variant/30">
+      @for (item of items(); track item.id) {
+        <div class="px-lg py-md flex items-center justify-between gap-md hover:bg-surface transition-colors">
+          <div class="flex items-center gap-md min-w-0">
+            <div
+              class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+              [class.bg-surface-container]="!isPayment(item)"
+              [class.text-primary]="!isPayment(item)"
+              [class.bg-surface-container-high]="isPayment(item)"
+              [class.income-amount]="isPayment(item)"
+            >
+              <span class="material-symbols-outlined">{{ icon(item) }}</span>
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-body-md font-semibold text-on-surface truncate">{{ item.description }}</span>
+              <span class="text-label-sm text-on-surface-variant">
+                {{ item.type === 'PAYMENT' ? 'Pago' : 'Compra' }} · {{ formatShortDate(item.date) }}
+              </span>
+              @if (billingLabel(item); as label) {
+                <span class="w-fit mt-xs text-label-sm px-2 py-0.5 rounded-md"
+                  [class.bg-surface-container]="label === 'Facturado'"
+                  [class.text-on-surface]="label === 'Facturado'"
+                  [class.bg-secondary-fixed]="label === 'Próximo extracto'"
+                  [class.text-on-surface-variant]="label === 'Próximo extracto'"
+                >{{ label }}</span>
+              }
+            </div>
+          </div>
+          <span
+            class="text-numeric-data shrink-0"
+            [class.income-amount]="isPayment(item)"
+            [class.text-on-surface]="!isPayment(item)"
+          >
+            {{ formatCurrency(item.amount) }}
+          </span>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="flex flex-col items-center justify-center gap-sm py-xl text-center text-on-surface-variant">
+      <span class="material-symbols-outlined text-outline text-4xl">receipt_long</span>
+      <p class="text-label-sm">Sin movimientos en esta tarjeta.</p>
+    </div>
+  }
+</section>

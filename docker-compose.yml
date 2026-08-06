@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: misfinanzas-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-misfinanzas}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-misfinanzas}
+      POSTGRES_DB: ${DB_NAME:-misfinanzas}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-misfinanzas} -d ${DB_NAME:-misfinanzas}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./Back/MisFinanzas
+    container_name: misfinanzas-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_URL: jdbc:postgresql://db:5432/${DB_NAME:-misfinanzas}
+      DB_USERNAME: ${DB_USERNAME:-misfinanzas}
+      DB_PASSWORD: ${DB_PASSWORD:-misfinanzas}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me-in-production}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200}
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:

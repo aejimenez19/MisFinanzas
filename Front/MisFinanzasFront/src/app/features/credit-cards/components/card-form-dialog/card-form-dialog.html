@@ -1,0 +1,141 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-md" role="dialog" aria-modal="true" aria-label="Tarjeta de crédito">
+  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" (click)="closed.emit()"></div>
+
+  <div class="relative bg-surface-container-lowest rounded-2xl p-lg w-full max-w-[28rem] shadow-soft border border-outline-variant/30 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between mb-md">
+      <h3 class="text-headline-md font-bold text-on-surface">
+        {{ isEditing() ? 'Editar tarjeta' : 'Agregar tarjeta' }}
+      </h3>
+      <button
+        type="button"
+        (click)="closed.emit()"
+        class="w-8 h-8 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container transition-colors"
+        aria-label="Cerrar"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <form class="flex flex-col gap-md" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="flex flex-col gap-xs">
+        <label class="text-label-sm text-on-surface-variant" for="card-name">Nombre</label>
+        <input
+          id="card-name"
+          formControlName="name"
+          class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+          placeholder="Ej. Platinum Rewards"
+          type="text"
+        />
+        @if (hasError('name')) {
+          <p class="text-label-sm text-error">El nombre es obligatorio.</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label class="text-label-sm text-on-surface-variant" for="card-bank">Banco</label>
+        <input
+          id="card-bank"
+          formControlName="bank"
+          class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+          placeholder="Ej. Banco Central"
+          type="text"
+        />
+        @if (hasError('bank')) {
+          <p class="text-label-sm text-error">El banco es obligatorio.</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label class="text-label-sm text-on-surface-variant" for="card-last-four">Últimos 4 dígitos</label>
+        <input
+          id="card-last-four"
+          formControlName="lastFourDigits"
+          class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+          placeholder="1234"
+          maxlength="4"
+          inputmode="numeric"
+          type="text"
+        />
+        @if (hasError('lastFourDigits')) {
+          <p class="text-label-sm text-error">Deben ser exactamente 4 dígitos.</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label class="text-label-sm text-on-surface-variant" for="card-limit">Límite de crédito</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface text-numeric-data pointer-events-none">$</span>
+          <input
+            id="card-limit"
+            formControlName="creditLimit"
+            appCurrencyInput
+            class="w-full pl-8 pr-4 py-3 bg-surface border border-outline-variant rounded-lg text-numeric-data font-bold text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:font-normal placeholder:text-on-surface-variant"
+            placeholder="0.00"
+            inputmode="decimal"
+            type="text"
+          />
+        </div>
+        @if (hasError('creditLimit')) {
+          <p class="text-label-sm text-error">Ingresa un límite mayor a cero.</p>
+        }
+      </div>
+
+      <div class="grid grid-cols-2 gap-md">
+        <div class="flex flex-col gap-xs">
+          <label class="text-label-sm text-on-surface-variant" for="card-cutoff">Día de corte</label>
+          <input
+            id="card-cutoff"
+            formControlName="cutoffDay"
+            class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+            min="1"
+            max="31"
+            type="number"
+          />
+          @if (hasError('cutoffDay')) {
+            <p class="text-label-sm text-error">Entre 1 y 31.</p>
+          }
+        </div>
+
+        <div class="flex flex-col gap-xs">
+          <label class="text-label-sm text-on-surface-variant" for="card-payment">Día de pago</label>
+          <input
+            id="card-payment"
+            formControlName="paymentDay"
+            class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+            min="1"
+            max="31"
+            type="number"
+          />
+          @if (hasError('paymentDay')) {
+            <p class="text-label-sm text-error">Entre 1 y 31.</p>
+          }
+        </div>
+      </div>
+
+      @if (error()) {
+        <p class="text-label-sm text-error">{{ error() }}</p>
+      }
+
+      <div class="flex flex-col gap-sm mt-sm">
+        @if (isEditing()) {
+          <button
+            type="button"
+            [disabled]="deleting()"
+            (click)="onDelete()"
+            class="w-full inline-flex items-center justify-center gap-md text-error py-3 rounded-lg text-label-sm font-bold hover:bg-error-container transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span class="material-symbols-outlined text-sm">delete</span>
+            {{ deleting() ? 'Eliminando...' : 'Eliminar tarjeta' }}
+          </button>
+        }
+        <button
+          type="submit"
+          [disabled]="submitting()"
+          class="w-full bg-primary text-on-primary py-3 rounded-lg text-label-sm font-bold shadow-soft hover:bg-primary-container transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {{ submitting() ? 'Guardando...' : (isEditing() ? 'Guardar cambios' : 'Agregar tarjeta') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

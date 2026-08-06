@@ -1,0 +1,83 @@
+<div class="flex flex-col gap-lg">
+  @if (loading()) {
+    <div class="flex flex-col items-center justify-center gap-md py-xl text-on-surface-variant">
+      <span class="material-symbols-outlined animate-spin text-primary">progress_activity</span>
+      <p class="text-label-sm">Cargando tus tarjetas...</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="flex flex-col items-center justify-center gap-md py-xl text-center">
+      <span class="material-symbols-outlined text-outline text-4xl">cloud_off</span>
+      <p class="text-body-md text-on-surface-variant">{{ loadError() }}</p>
+      <button
+        type="button"
+        (click)="loadCards()"
+        class="inline-flex items-center gap-md px-lg py-2 bg-primary text-on-primary rounded-lg text-label-sm font-bold hover:bg-primary-container transition-colors"
+      >
+        <span class="material-symbols-outlined text-sm">refresh</span> Reintentar
+      </button>
+    </div>
+  } @else {
+    <header class="flex flex-col sm:flex-row sm:items-end justify-between gap-sm">
+      <div>
+        <h2 class="text-headline-md font-bold text-on-surface">Tarjetas de crédito</h2>
+        <p class="text-label-sm text-on-surface-variant">Administra tus líneas de crédito y pagos próximos.</p>
+      </div>
+      <button
+        type="button"
+        (click)="openCreateDialog()"
+        class="w-fit inline-flex items-center gap-md px-lg py-2 bg-primary text-on-primary rounded-lg text-label-sm font-bold shadow-soft hover:bg-primary-container transition-colors"
+      >
+        <span class="material-symbols-outlined text-sm">add</span> Agregar tarjeta
+      </button>
+    </header>
+
+    @if (cards().length === 0) {
+      <div class="flex flex-col items-center justify-center gap-md py-xl text-center bg-surface-container-lowest rounded-2xl border border-outline-variant/30 shadow-soft">
+        <span class="material-symbols-outlined text-outline text-5xl">credit_card_off</span>
+        <p class="text-body-md text-on-surface-variant">
+          Aún no tienes tarjetas de crédito registradas.
+        </p>
+        <button
+          type="button"
+          (click)="openCreateDialog()"
+          class="inline-flex items-center gap-md px-lg py-2 bg-primary text-on-primary rounded-lg text-label-sm font-bold hover:bg-primary-container transition-colors"
+        >
+          <span class="material-symbols-outlined text-sm">add</span> Registrar mi primera tarjeta
+        </button>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+        <div class="lg:col-span-7 flex flex-col gap-lg">
+          <app-active-cards
+            [cards]="cards()"
+            [selectedId]="selectedId()"
+            [cardholderName]="cardholderName()"
+            (select)="selectCard($event)"
+            (edit)="openEditDialog($event)"
+          />
+
+          @if (selectedCard(); as card) {
+            <app-card-details [card]="card" />
+            <app-card-activity [items]="activity()" [loading]="activityLoading()" [cutoffDay]="selectedCard()?.cutoffDay ?? 1" />
+          }
+        </div>
+
+        <div class="lg:col-span-5 flex flex-col gap-lg">
+          @if (selectedCard(); as card) {
+            <app-quick-actions [card]="card" (created)="onActivityChanged()" />
+          }
+          <app-debt-summary [cards]="cards()" />
+        </div>
+      </div>
+    }
+  }
+</div>
+
+@if (dialogOpen()) {
+  <app-card-form-dialog
+    [card]="editingCard()"
+    (saved)="onCardSaved($event)"
+    (deleted)="onCardDeleted($event)"
+    (closed)="closeDialog()"
+  />
+}

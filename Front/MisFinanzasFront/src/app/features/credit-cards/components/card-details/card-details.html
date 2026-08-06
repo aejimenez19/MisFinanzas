@@ -1,0 +1,73 @@
+<section class="bg-surface-container-lowest rounded-2xl p-lg shadow-soft border border-outline-variant/30">
+  <h3 class="text-headline-md font-bold text-on-surface mb-md">{{ card().name }}</h3>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-md">
+    <div class="min-w-0">
+      <p class="text-label-sm text-on-surface-variant">Día de corte</p>
+      <p class="text-body-md font-semibold text-on-surface">{{ card().cutoffDay }}</p>
+    </div>
+    <div class="min-w-0">
+      <p class="text-label-sm text-on-surface-variant">Pago próximo</p>
+      <p class="text-body-md font-semibold text-on-surface">{{ formatShortDate(card().nextPaymentDate) }}</p>
+      <p class="text-numeric-data font-bold text-on-surface numeric-wrap">{{ formatCurrency(nextPaymentAmount()) }}</p>
+    </div>
+    <div class="min-w-0">
+      <p class="text-label-sm text-on-surface-variant">Límite</p>
+      <p class="text-numeric-data font-bold text-on-surface numeric-wrap">{{ formatCurrency(card().creditLimit) }}</p>
+    </div>
+    <div class="min-w-0">
+      <p class="text-label-sm text-on-surface-variant">Disponible</p>
+      <p class="text-numeric-data font-bold income-amount numeric-wrap">{{ formatCurrency(card().available) }}</p>
+    </div>
+  </div>
+
+  <div class="mt-lg">
+    <div class="flex justify-between items-center mb-xs">
+      <span class="text-label-sm text-on-surface-variant">Utilización</span>
+      <span class="text-label-sm font-semibold text-on-surface">{{ formatPercent(card().limitUsagePercent) }}</span>
+    </div>
+    <div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+      <div
+        class="h-full rounded-full transition-all"
+        [class.bg-emerald-600]="card().limitUsagePercent < 50"
+        [class.bg-primary]="card().limitUsagePercent >= 50 && card().limitUsagePercent < 80"
+        [class.bg-error]="card().limitUsagePercent >= 80"
+        [style.width.%]="usageWidth()"
+      ></div>
+    </div>
+    <p class="text-xs text-on-surface-variant mt-sm">
+      Saldo actual: <span class="text-numeric-data font-medium text-on-surface">{{ formatCurrency(card().pendingBalance) }}</span>
+    </p>
+  </div>
+
+  <div class="mt-lg pt-lg border-t border-outline-variant/50 flex flex-col gap-md">
+    <div class="flex justify-between items-center">
+      <span class="text-label-sm text-on-surface-variant">Facturado (por pagar)</span>
+      <span class="text-numeric-data font-bold text-on-surface">{{ formatCurrency(card().billedAmount) }}</span>
+    </div>
+    <div class="flex justify-between items-center">
+      <span class="text-label-sm text-on-surface-variant">Siguiente período (a facturar)</span>
+      <span class="text-numeric-data font-bold text-on-surface">{{ formatCurrency(card().unbilledAmount) }}</span>
+    </div>
+  </div>
+
+  @if (outstandingStatements().length > 0) {
+    <div class="mt-lg pt-lg border-t border-outline-variant/50">
+      <h4 class="text-label-sm text-on-surface-variant mb-sm">Próximos pagos</h4>
+      <div class="flex flex-col divide-y divide-outline-variant/30">
+        @for (statement of outstandingStatements(); track statement.cutoffDate) {
+          <div class="py-2 flex flex-col gap-1">
+            <div class="flex justify-between items-center">
+              <span class="text-body-md font-semibold text-on-surface">{{ formatShortDate(statement.dueDate) }}</span>
+              <span class="text-numeric-data font-bold text-on-surface">{{ formatCurrency(statement.remainingAmount) }}</span>
+            </div>
+            <div class="flex justify-between items-center text-label-sm text-on-surface-variant">
+              <span>Corte {{ formatShortDate(statement.cutoffDate) }}</span>
+              <span>Saldo: {{ formatCurrency(statement.totalAmount) }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</section>

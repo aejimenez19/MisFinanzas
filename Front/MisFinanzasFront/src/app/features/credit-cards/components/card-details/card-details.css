@@ -1,0 +1,8 @@
+:host {
+  display: block;
+}
+
+.numeric-wrap {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

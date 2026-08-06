@@ -1,0 +1,149 @@
+<section class="bg-surface-container-lowest rounded-2xl p-lg shadow-soft border border-outline-variant/30 h-full">
+  <h3 class="text-headline-md font-bold text-on-surface mb-md">Acciones rápidas</h3>
+
+  <div class="flex p-1 bg-secondary-fixed rounded-xl mb-lg" role="group" aria-label="Tipo de acción">
+    <button
+      type="button"
+      (click)="setAction('PURCHASE')"
+      class="flex-1 py-2 px-4 rounded-lg text-label-sm font-bold transition-all cursor-pointer"
+      [class.bg-white]="action() === 'PURCHASE'"
+      [class.text-on-surface]="action() === 'PURCHASE'"
+      [class.shadow-sm]="action() === 'PURCHASE'"
+      [class.ring-1]="action() === 'PURCHASE'"
+      [class.ring-black/5]="action() === 'PURCHASE'"
+      [class.text-on-surface-variant]="action() !== 'PURCHASE'"
+    >
+      Registrar compra
+    </button>
+    <button
+      type="button"
+      (click)="setAction('PAYMENT')"
+      class="flex-1 py-2 px-4 rounded-lg text-label-sm font-bold transition-all cursor-pointer"
+      [class.bg-white]="action() === 'PAYMENT'"
+      [class.text-on-surface]="action() === 'PAYMENT'"
+      [class.shadow-sm]="action() === 'PAYMENT'"
+      [class.ring-1]="action() === 'PAYMENT'"
+      [class.ring-black/5]="action() === 'PAYMENT'"
+      [class.text-on-surface-variant]="action() !== 'PAYMENT'"
+    >
+      Pagar tarjeta
+    </button>
+  </div>
+
+  @if (action() === 'PURCHASE') {
+    <form class="flex flex-col gap-md" [formGroup]="purchaseForm" (ngSubmit)="submitPurchase()">
+      <div class="flex flex-col gap-xs">
+        <label class="text-label-sm text-on-surface-variant" for="purchase-amount">Monto</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface text-numeric-data pointer-events-none">$</span>
+          <input
+            id="purchase-amount"
+            formControlName="amount"
+            appCurrencyInput
+            class="w-full pl-8 pr-4 py-3 bg-surface border border-outline-variant rounded-lg text-numeric-data font-bold text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:font-normal placeholder:text-on-surface-variant"
+            placeholder="0.00"
+            inputmode="decimal"
+            type="text"
+          />
+        </div>
+        @if (hasPurchaseError('amount')) {
+          <p class="text-label-sm text-error">Ingresa un monto mayor a cero.</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label class="text-label-sm text-on-surface-variant" for="purchase-description">Comercio / Descripción</label>
+        <input
+          id="purchase-description"
+          formControlName="description"
+          class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+          placeholder="Ej. Supermercado"
+          type="text"
+        />
+        @if (hasPurchaseError('description')) {
+          <p class="text-label-sm text-error">La descripción es obligatoria.</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label class="text-label-sm text-on-surface-variant" for="purchase-date">Fecha</label>
+        <input
+          id="purchase-date"
+          formControlName="purchaseDate"
+          class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+          type="date"
+        />
+        @if (hasPurchaseError('purchaseDate')) {
+          <p class="text-label-sm text-error">Ingresa una fecha válida.</p>
+        }
+      </div>
+
+      @if (error()) {
+        <p class="text-label-sm text-error">{{ error() }}</p>
+      }
+
+      <button
+        type="submit"
+        [disabled]="submitting()"
+        class="w-full bg-primary text-on-primary py-3 rounded-lg text-label-sm font-bold shadow-soft hover:bg-primary-container transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {{ submitting() ? 'Guardando...' : 'Agregar compra' }}
+      </button>
+    </form>
+  } @else {
+    <form class="flex flex-col gap-md" [formGroup]="paymentForm" (ngSubmit)="submitPayment()">
+      <div class="flex flex-col gap-xs">
+        <label class="text-label-sm text-on-surface-variant" for="payment-amount">Monto del pago</label>
+        <div class="relative">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface text-numeric-data pointer-events-none">$</span>
+          <input
+            id="payment-amount"
+            formControlName="amount"
+            appCurrencyInput
+            class="w-full pl-8 pr-4 py-3 bg-surface border border-outline-variant rounded-lg text-numeric-data font-bold text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all placeholder:font-normal placeholder:text-on-surface-variant"
+            placeholder="0.00"
+            inputmode="decimal"
+            type="text"
+          />
+        </div>
+        <div class="flex gap-2 mt-2">
+          <button
+            type="button"
+            (click)="fillCurrentBalance()"
+            class="text-xs bg-secondary-fixed px-2 py-1 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors"
+          >
+            Saldo actual ({{ formatCurrency(card().pendingBalance) }})
+          </button>
+        </div>
+        @if (hasPaymentError('amount')) {
+          <p class="text-label-sm text-error">Ingresa un monto mayor a cero.</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label class="text-label-sm text-on-surface-variant" for="payment-date">Fecha</label>
+        <input
+          id="payment-date"
+          formControlName="paymentDate"
+          class="w-full px-4 py-3 bg-surface border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+          type="date"
+        />
+        @if (hasPaymentError('paymentDate')) {
+          <p class="text-label-sm text-error">Ingresa una fecha válida.</p>
+        }
+      </div>
+
+      @if (error()) {
+        <p class="text-label-sm text-error">{{ error() }}</p>
+      }
+
+      <button
+        type="submit"
+        [disabled]="submitting()"
+        class="w-full bg-emerald-700 text-white py-3 rounded-lg text-label-sm font-bold shadow-soft hover:bg-emerald-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {{ submitting() ? 'Guardando...' : 'Realizar pago' }}
+      </button>
+    </form>
+  }
+</section>

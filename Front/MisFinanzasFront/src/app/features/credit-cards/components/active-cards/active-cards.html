@@ -1,0 +1,55 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
+  @for (card of cards(); track card.id) {
+    <div
+      role="button"
+      tabindex="0"
+      (click)="select.emit(card.id)"
+      (keydown.enter)="select.emit(card.id)"
+      class="relative rounded-xl p-md overflow-hidden cursor-pointer transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-primary min-h-[150px] flex flex-col justify-between"
+      [class.sm:col-span-2]="cards().length === 1"
+      [class.min-h-[210px]]="cards().length === 1"
+      [class.bg-gradient-to-br]="isSelected(card)"
+      [class.from-primary-container]="isSelected(card)"
+      [class.to-primary]="isSelected(card)"
+      [class.text-on-primary]="isSelected(card)"
+      [class.transform]="isSelected(card)"
+      [class.scale-[1.02]]="isSelected(card)"
+      [class.shadow-soft]="isSelected(card)"
+      [class.bg-surface-container-high]="!isSelected(card)"
+      [class.text-on-surface]="!isSelected(card)"
+      [class.opacity-70]="!isSelected(card)"
+      [class.hover:opacity-100]="!isSelected(card)"
+      [class.border]="!isSelected(card)"
+      [class.border-transparent]="!isSelected(card)"
+      [class.hover:border-outline-variant]="!isSelected(card)"
+    >
+      @if (isSelected(card)) {
+        <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+      }
+      <div class="flex justify-between items-center relative z-10">
+        <span class="text-label-sm opacity-90">{{ card.name }}</span>
+        <div class="flex items-center gap-xs">
+          @if (isSelected(card)) {
+            <span class="material-symbols-outlined text-sm">contactless</span>
+          }
+          <button
+            type="button"
+            (click)="edit.emit(card); $event.stopPropagation()"
+            class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-black/10 transition-colors"
+            aria-label="Editar tarjeta"
+          >
+            <span class="material-symbols-outlined text-sm">edit</span>
+          </button>
+        </div>
+      </div>
+      <div class="text-numeric-data tracking-widest relative z-10">{{ maskedNumber(card) }}</div>
+      <div class="flex justify-between items-end relative z-10">
+        <div>
+          <div class="text-[10px] uppercase opacity-70">Titular</div>
+          <div class="text-label-sm">{{ cardholderName() }}</div>
+        </div>
+        <span class="material-symbols-outlined text-2xl opacity-80">credit_score</span>
+      </div>
+    </div>
+  }
+</div>

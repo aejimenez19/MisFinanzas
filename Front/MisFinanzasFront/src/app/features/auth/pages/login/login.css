@@ -1,0 +1,26 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.brand-panel__overlay {
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 20% 110%,
+      color-mix(in srgb, var(--color-inverse-primary) 18%, transparent),
+      transparent
+    ),
+    radial-gradient(
+      ellipse 60% 50% at 90% 10%,
+      color-mix(in srgb, var(--color-primary-container) 40%, transparent),
+      transparent
+    );
+}
+
+.brand-panel__grid {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-on-primary) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-on-primary) 4%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+}

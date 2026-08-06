@@ -1,0 +1,41 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-md">
+  <div class="bg-primary rounded-2xl p-lg text-on-primary shadow-soft flex flex-col justify-center gap-xs relative overflow-hidden">
+    <div class="absolute inset-x-0 top-0 h-1 bg-on-primary/30"></div>
+    <p class="text-label-sm opacity-90">Dinero disponible</p>
+    <p class="text-display-lg-mobile font-bold">{{ formatCurrency(availableBalance()) }}</p>
+    <p class="text-label-sm opacity-90">{{ formatCurrency(monthNet()) }} neto del mes</p>
+  </div>
+
+  <div class="bg-surface-container-lowest rounded-2xl p-lg shadow-soft border border-outline-variant/30 flex flex-col justify-center gap-xs">
+    <div class="flex items-center gap-sm">
+      <span class="material-symbols-outlined text-primary">trending_up</span>
+      <p class="text-label-sm text-on-surface-variant">Ingresos del mes</p>
+    </div>
+    <p class="text-numeric-data font-bold text-on-surface">{{ formatCurrency(monthIncomes()) }}</p>
+    <p class="text-label-sm text-on-surface-variant">Total entradas registradas</p>
+  </div>
+
+  <div class="bg-surface-container-lowest rounded-2xl p-lg shadow-soft border border-outline-variant/30 flex flex-col justify-center gap-xs">
+    <div class="flex items-center gap-sm">
+      <span class="material-symbols-outlined text-outline">account_balance_wallet</span>
+      <p class="text-label-sm text-on-surface-variant">Gastos del mes</p>
+    </div>
+    <p class="text-numeric-data font-bold text-on-surface">{{ formatCurrency(monthExpenses()) }}</p>
+    <p class="text-label-sm text-on-surface-variant">Total egresos registrados</p>
+  </div>
+
+  <div class="bg-surface-container-lowest rounded-2xl p-lg shadow-soft border border-outline-variant/30 flex flex-col justify-center gap-xs">
+    <div class="flex items-center gap-sm">
+      <span class="material-symbols-outlined text-primary">credit_card</span>
+      <p class="text-label-sm text-on-surface-variant">Próximo pago de tarjeta</p>
+    </div>
+    <p class="text-numeric-data font-bold text-on-surface">{{ formatCurrency(nextPaymentAmount()) }}</p>
+    @if (hasNextPayment(nextPaymentDate())) {
+      <p class="text-label-sm text-on-surface-variant">
+        Vence el {{ formatShortDate(nextPaymentDate()!) }} · dentro de {{ daysUntilDue() }} días
+      </p>
+    } @else {
+      <p class="text-label-sm text-on-surface-variant">Sin pagos pendientes</p>
+    }
+  </div>
+</div>
