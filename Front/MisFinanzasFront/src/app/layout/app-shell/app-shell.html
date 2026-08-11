@@ -15,90 +15,67 @@
         <span class="text-label-sm">{{ item.label }}</span>
       </a>
     }
-    @for (item of placeholderItems; track item.link) {
-      <button
-        type="button"
-        class="flex items-center gap-md text-on-surface-variant p-3 hover:bg-surface-container-high transition-colors rounded-xl cursor-pointer"
-      >
-        <span class="material-symbols-outlined text-outline transition-colors">{{ item.icon }}</span>
-        <span class="text-label-sm">{{ item.label }}</span>
-      </button>
-    }
   </div>
 
-  <div class="mt-auto pt-lg border-t border-outline-variant flex flex-col gap-sm">
+  <div class="mt-auto pt-lg border-t border-outline-variant">
     <a
       routerLink="/transactions"
       class="w-full bg-primary text-on-primary text-label-sm py-3 px-4 rounded-lg font-bold hover:bg-primary-container transition-colors shadow-soft text-center"
     >
       Agregar transacción
     </a>
-    <div class="flex flex-col gap-xs mt-sm">
-      <button
-        type="button"
-        class="flex items-center gap-md text-on-surface-variant p-3 hover:bg-surface-container-high transition-colors rounded-xl cursor-pointer"
-      >
-        <span class="material-symbols-outlined text-outline">settings</span>
-        <span class="text-label-sm">Ajustes</span>
-      </button>
-      <button
-        type="button"
-        class="flex items-center gap-md text-error p-3 hover:bg-error-container transition-colors rounded-xl cursor-pointer"
-        (click)="onLogout()"
-      >
-        <span class="material-symbols-outlined">logout</span>
-        <span class="text-label-sm">Cerrar sesión</span>
-      </button>
-    </div>
   </div>
 </nav>
 
 <div class="flex-1 flex flex-col md:ml-64 w-full bg-background min-h-screen">
   <header class="sticky top-0 border-b border-outline-variant bg-surface/80 backdrop-blur-md z-40">
-    <div class="flex justify-between items-center w-full px-lg py-sm h-16 max-w-container-max mx-auto">
-      <div class="flex items-center w-full max-w-xs">
-        <div class="relative w-full">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm pointer-events-none">search</span>
-          <input
-            class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-label-sm text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
-            placeholder="Buscar..."
-            type="text"
-            aria-label="Buscar"
-          />
-        </div>
-      </div>
-
+    <div class="flex justify-end items-center w-full px-lg py-sm h-16 max-w-container-max mx-auto">
       <div class="flex items-center gap-md">
-        <button
-          type="button"
-          class="text-on-surface-variant hover:text-primary transition-all p-2 rounded-full hover:bg-surface-container"
-          aria-label="Notificaciones"
-        >
-          <span class="material-symbols-outlined">notifications</span>
-        </button>
-        <button
-          type="button"
-          class="text-on-surface-variant hover:text-primary transition-all p-2 rounded-full hover:bg-surface-container"
-          aria-label="Ayuda"
-        >
-          <span class="material-symbols-outlined">help</span>
-        </button>
         <a
           routerLink="/transactions"
           class="bg-primary text-on-primary px-4 py-2 rounded-lg text-label-sm font-bold shadow-soft hover:bg-primary-container transition-colors hidden sm:block"
         >
           Nueva entrada
         </a>
-        <button
-          type="button"
-          class="md:hidden text-on-surface-variant hover:text-primary transition-all p-2 rounded-full hover:bg-surface-container"
-          aria-label="Cerrar sesión"
-          (click)="onLogout()"
-        >
-          <span class="material-symbols-outlined">logout</span>
-        </button>
-        <div class="h-8 w-8 rounded-full bg-surface-container-high border border-outline-variant overflow-hidden cursor-pointer shadow-soft flex items-center justify-center" aria-label="Perfil de usuario">
-          <span class="material-symbols-outlined text-sm text-on-surface-variant">person</span>
+        <div class="relative">
+          <button
+            type="button"
+            class="h-9 w-9 rounded-full bg-primary text-on-primary shadow-soft flex items-center justify-center cursor-pointer hover:bg-primary-container transition-colors"
+            (click)="toggleUserMenu()"
+            [attr.aria-label]="'Menú de usuario'"
+            [attr.aria-expanded]="userMenuOpen()"
+          >
+            @if (initials()) {
+              <span class="text-label-sm font-bold leading-none">{{ initials() }}</span>
+            } @else {
+              <span class="material-symbols-outlined text-lg">person</span>
+            }
+          </button>
+
+          @if (userMenuOpen()) {
+            <div class="fixed inset-0 z-40" (click)="userMenuOpen.set(false)"></div>
+            <div class="absolute right-0 top-full mt-2 w-56 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-modal p-sm z-50">
+              <div class="px-3 py-2 border-b border-outline-variant mb-1">
+                <p class="text-label-sm font-semibold text-on-surface truncate">{{ fullName() }}</p>
+                <p class="text-[12px] text-on-surface-variant truncate">{{ userEmail() }}</p>
+              </div>
+              <button
+                type="button"
+                class="flex items-center gap-md w-full p-2 rounded-lg text-label-sm text-on-surface-variant hover:bg-surface-container transition-colors cursor-pointer"
+              >
+                <span class="material-symbols-outlined text-[18px]">settings</span>
+                Ajustes
+              </button>
+              <button
+                type="button"
+                class="flex items-center gap-md w-full p-2 rounded-lg text-label-sm text-error hover:bg-error-container transition-colors cursor-pointer"
+                (click)="onLogout()"
+              >
+                <span class="material-symbols-outlined text-[18px]">logout</span>
+                Cerrar sesión
+              </button>
+            </div>
+          }
         </div>
       </div>
     </div>

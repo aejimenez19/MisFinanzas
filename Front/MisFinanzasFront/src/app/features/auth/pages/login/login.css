@@ -3,6 +3,55 @@
   height: 100%;
 }
 
+.login-input {
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.login-input:focus {
+  border-bottom-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.login-input.border-error,
+.login-input.border-error:focus {
+  border-bottom-color: var(--color-error);
+  box-shadow: 0 4px 12px rgba(186, 26, 26, 0.08);
+}
+
+.login-checkbox {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--color-outline);
+  border-radius: 4px;
+  background: var(--color-surface);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.login-checkbox:hover {
+  border-color: var(--color-primary);
+}
+
+.login-checkbox:checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.login-checkbox:checked::after {
+  content: '';
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid var(--color-on-primary);
+  border-bottom: 2px solid var(--color-on-primary);
+  transform: rotate(-45deg) translateY(-1px);
+}
+
 .brand-panel__overlay {
   background:
     radial-gradient(
